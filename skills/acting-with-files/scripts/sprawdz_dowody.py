@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Kontrola dowodów planu (reguła 7 acting-with-files). Tylko odczyt, biblioteka standardowa.
 
-Użycie: python3 -I sprawdz_dowody.py <katalog-planu | task_plan.md>
+Użycie: python3 -I sprawdz_dowody.py [--zamkniecie] <katalog-planu | task_plan.md>
+Tryb --zamkniecie (własne pilnowanie zamknięcia faz, bez cudzego dodatku): oprócz kontroli dowodów
+odmawia (kod 1), gdy któraś faza nie jest complete — wołasz go tuż przed ogłoszeniem pracy za skończoną.
 Kod wyjścia: 0 = przechodzi, 1 = naruszenia, 2 = błąd użycia.
 
 Sprawdza: dokładnie jedno pole **Status:** na fazę; faza complete ma konkretny „Dowód”;
@@ -67,10 +69,12 @@ def sekcja(tekst, tytul):
 
 
 def main(argv):
-    if len(argv) != 2:
+    args = [a for a in argv[1:] if a != "--zamkniecie"]
+    zamkniecie = len(args) != len(argv) - 1
+    if len(args) != 1:
         print(__doc__)
         return 2
-    p = Path(argv[1])
+    p = Path(args[0])
     plan = p / "task_plan.md" if p.is_dir() else p
     if not plan.is_file():
         print(f"BRAK PLIKU: {plan}")
@@ -98,6 +102,10 @@ def main(argv):
         for nr in re.findall(r"\(Phase\s+(\d+)\)", linia):
             if int(nr) in zamkniete:
                 bledy.append(f"Phase {nr} jest complete, a ma wpis w „Blokady”: {linia.strip()}")
+    if zamkniecie:
+        for f in fazy:
+            if "complete" not in (f["status"] or "").lower():
+                bledy.append(f"zamknięcie: Phase {f['nr']}: {f['nazwa']} ma status „{f['status'] or 'brak'}” (nie complete)")
     print(f"Plan: {plan}\nFazy: {len(fazy)}, zamknięte: {len(zamkniete)}")
     if bledy:
         print(f"NARUSZENIA ({len(bledy)}):")

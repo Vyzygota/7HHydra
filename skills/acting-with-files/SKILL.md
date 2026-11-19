@@ -2,13 +2,13 @@
 name: acting-with-files
 description: Plan faz na dysku z dowodami — każda faza ma „Gotowe, gdy” i „Dowód” przypięte do wersji i numerów wymagań; kolejka decyzji człowieka; dziennik działań z cofnięciem; role właściciel / wykonawca / recenzent; stan pracy wynika z tego, czego brakuje. Używaj przy zakładaniu, prowadzeniu, delegowaniu i zamykaniu faz planu oraz przy raporcie dla człowieka.
 rodzina: hybryda specyfikacji (rdzeń ogólny)
-rozszerza: planning-with-files (pliki planu, wstrzykiwanie, bramka ukończenia)
+zgodny z: planning-with-files (ten sam zapis plików i faz; dodatek NIE jest wymagany — szablony i automat kontroli są w tym skillu)
 zrodla: acting-with-files zespołu (część ogólna, 01.11.2026); reguły Triady §6, §8; recenzje SPEC-SKILLE-20261101; Anthropic Prompting Claude Opus 5 (over-verification), Skill authoring best practices (degrees of freedom)
 ---
 
 # acting-with-files — rdzeń ogólny
 
-Planning-with-files trzyma plan na dysku; ten skill mówi, jak fazy zamykać, przekazywać i zostawiać ślad. Najpierw nakładka (jak w `spec-driven`).
+Ten skill działa samodzielnie: ma własne szablony plików planu (`templates/`) i własny automat kontroli (`scripts/sprawdz_dowody.py`, z trybem `--zamkniecie` pilnującym, by nic nie zostało otwarte przed ogłoszeniem końca). Zapis plików i faz jest zgodny z dodatkiem planning-with-files — kto go ma, może używać obu. Skill mówi, jak fazy zamykać, przekazywać i zostawiać ślad. Najpierw nakładka (jak w `spec-driven`).
 
 Plik planu i osiem reguł są **twarde**: czytają je automaty i inni agenci, a od nich zależy, czy człowiek widzi prawdziwy stan pracy. **Swobodne** jest to, jak dzielisz pracę na fazy, ile ich jest, co i jak zapisujesz w `findings.md` i jak sprawdzasz własną pracę.
 
@@ -21,7 +21,7 @@ Plik planu i osiem reguł są **twarde**: czytają je automaty i inni agenci, a 
 | `progress.md` | przebieg sesji, wyniki kontroli; na górze „Stan na RRRR-MM-DD” (5–10 linii) | dopisywany; wpisy starsze niż 7 dni zwijane do `progress-archiwum.md` |
 | `dzialania.md` | działania poza planem z cofnięciem | dopisywany |
 
-Znaczniki faz zostają w formie `### Phase N: <nazwa>` i `**Status:** pending | in_progress | complete` — liczy je bramka planning-with-files. Pola faz: `**Wykonawca:**`, `**Gotowe, gdy:**`, `**Dowód:**` (dokładnie tak, pogrubione). Każde pole to osobny punkt listy `- **Pole:** wartość` pod nagłówkiem fazy; jedna linia `- **Status:**` na fazę, zmieniana w miejscu, nie dopisywana. Pola kontraktu i sekcje stanu (Kolejka decyzji, Blokady, Błędy) **zostają w pliku także puste** — ze znacznikiem „—”; sprawdza je automat. (W specyfikacjach przeciwnie: puste sekcje się pomija.)
+Znaczniki faz zostają w formie `### Phase N: <nazwa>` i `**Status:** pending | in_progress | complete` — liczy je nasz automat (i, jeśli jest zainstalowany, bramka planning-with-files). Pola faz: `**Wykonawca:**`, `**Gotowe, gdy:**`, `**Dowód:**` (dokładnie tak, pogrubione). Każde pole to osobny punkt listy `- **Pole:** wartość` pod nagłówkiem fazy; jedna linia `- **Status:**` na fazę, zmieniana w miejscu, nie dopisywana. Pola kontraktu i sekcje stanu (Kolejka decyzji, Blokady, Błędy) **zostają w pliku także puste** — ze znacznikiem „—”; sprawdza je automat. (W specyfikacjach przeciwnie: puste sekcje się pomija.)
 
 ## Zanim napiszesz fazy
 
