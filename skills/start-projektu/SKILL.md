@@ -3,7 +3,7 @@ name: start-projektu
 description: Zakłada nowy projekt zanim powstanie jakikolwiek kod — strukturę wiedzy (surowe wejście → koncepcja → kanon ze źródłami), konstytucję projektu, dokument projektu (np. GDD dla gry), tor planów i pierwszą listę funkcji do opisania. Używaj, gdy człowiek zaczyna nowy projekt, gdy projekt nie ma struktury wiedzy albo gdy wiedza projektu jest rozproszona.
 rodzina: hybryda specyfikacji (rdzeń ogólny)
 zastepuje: init-project
-zrodla: kanon init-project (28.06.2026); schemat projektów zespołu (tory surówka / koncepcja / kanon / plany, decyzje 25.10.2026: „koncepcja zawsze na początku”, „mechanizm, nie reguła”); reguły Triady §8, §9, §11; SPEC-SKILLE-20261101 (decyzja właściciela zespołu 01.11.2026: start projektu z modelem katalogów, konstytucją, kanonem, odwołaniem do GDD)
+zrodla: kanon init-project (28.06.2026); schemat projektów zespołu (tory surówka / koncepcja / kanon / plany, decyzje 25.10.2026: „koncepcja zawsze na początku”, „mechanizm, nie reguła”); SPEC-SKILLE-20261101 (decyzja właściciela zespołu 01.11.2026: start projektu z modelem katalogów, konstytucją, kanonem, odwołaniem do GDD)
 ---
 
 # start-projektu

@@ -3,7 +3,7 @@ name: acting-with-files
 description: Plan faz na dysku z dowodami — każda faza ma „Gotowe, gdy” i „Dowód” przypięte do wersji i numerów wymagań; kolejka decyzji człowieka; dziennik działań z cofnięciem; role właściciel / wykonawca / recenzent; stan pracy wynika z tego, czego brakuje. Używaj przy zakładaniu, prowadzeniu, delegowaniu i zamykaniu faz planu oraz przy raporcie dla człowieka.
 rodzina: hybryda specyfikacji (rdzeń ogólny)
 zgodny z: planning-with-files (ten sam zapis plików i faz; dodatek NIE jest wymagany — szablony i automat kontroli są w tym skillu)
-zrodla: acting-with-files zespołu (część ogólna, 01.11.2026); reguły Triady §6, §8; recenzje SPEC-SKILLE-20261101; Anthropic Prompting Claude Opus 5 (over-verification), Skill authoring best practices (degrees of freedom)
+zrodla: acting-with-files zespołu (część ogólna, 01.11.2026); recenzje SPEC-SKILLE-20261101; Anthropic Prompting Claude Opus 5 (over-verification), Skill authoring best practices (degrees of freedom)
 ---
 
 # acting-with-files — rdzeń ogólny

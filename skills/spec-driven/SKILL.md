@@ -2,14 +2,14 @@
 name: spec-driven
 description: Przewodnik pracy od pomysłu do sprawdzonej zmiany. Rozstrzyga, ile dokumentów potrzebuje praca (żaden / plan techniczny / opis zachowania + plan techniczny), prowadzi kolejność start projektu → opis zachowania → plan techniczny → plan faz → wykonanie → weryfikacja i mówi, co jest twarde, a co zostawione osądowi. Używaj na starcie każdej większej pracy i gdy nie wiadomo, który skill rodziny wywołać.
 rodzina: hybryda specyfikacji (rdzeń ogólny)
-zrodla: warpdotdev/common-skills spec-driven-implementation (01.11.2026); kanon spec-driven-implementation, write-spec, init-project (28.06.2026); acting-with-files; reguły Triady §1–3, §6, §8, §11; Anthropic: Prompting Claude Opus 5, Skill authoring best practices (odczyt 01.11.2026)
+zrodla: warpdotdev/common-skills spec-driven-implementation (01.11.2026); kanon spec-driven-implementation, write-spec, init-project (28.06.2026); acting-with-files; Anthropic: Prompting Claude Opus 5, Skill authoring best practices (odczyt 01.11.2026)
 ---
 
 # spec-driven — przewodnik
 
 ## Najpierw nakładka
 
-Poszukaj specjalizacji tej rodziny: plik skilla z frontmatterem `specializes: <skill rdzenia albo spec-driven>` i `specializes_source: <gdzie leży rdzeń>` — najpierw w skillach projektu, potem zespołu. Nakładka podaje miejsca plików, jednostkę zmiany, kanał pytań do człowieka. Bez nakładki działasz na wartościach domyślnych stąd: specyfikacja `specs/<id>/PRODUCT.md` i `TECH.md`, plan `.planning/<id>/`; `<id>` to identyfikator zgłoszenia albo nazwa funkcji w kebab-case, ten sam dla specyfikacji i planu.
+Poszukaj specjalizacji tej rodziny: plik skilla z frontmatterem `nakladka_na: <skill rdzenia albo spec-driven>` i `nakladka_zrodlo: <gdzie leży rdzeń>` — najpierw w skillach projektu, potem zespołu. Nakładka podaje miejsca plików, jednostkę zmiany, kanał pytań do człowieka. Bez nakładki działasz na wartościach domyślnych stąd: specyfikacja `specs/<id>/PRODUCT.md` i `TECH.md`, plan `.planning/<id>/`; `<id>` to identyfikator zgłoszenia albo nazwa funkcji w kebab-case, ten sam dla specyfikacji i planu.
 
 ## Ile dokumentów
 

@@ -2,7 +2,7 @@
 name: implement-specs
 description: Wykonanie zaakceptowanej specyfikacji faza po fazie — w izolowanej kopii roboczej, testy z tabeli planu technicznego, specyfikacja poprawiana razem z kodem, praca utrwalona przed sprzątaniem. Używaj po akceptacji opisu zachowania i planu technicznego.
 rodzina: hybryda specyfikacji (rdzeń ogólny)
-zrodla: kanon implement-specs (28.06.2026, izolacja i TDD — inspiracja obra/superpowers); warpdotdev/common-skills implement-specs (01.11.2026); reguły Triady §3, §6(b); Anthropic Prompting Claude Opus 5 (task scope, over-verification)
+zrodla: kanon implement-specs (28.06.2026, izolacja i TDD — inspiracja obra/superpowers); warpdotdev/common-skills implement-specs (01.11.2026); Anthropic Prompting Claude Opus 5 (task scope, over-verification)
 ---
 
 # implement-specs — wykonanie

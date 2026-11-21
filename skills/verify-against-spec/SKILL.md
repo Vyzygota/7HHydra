@@ -2,7 +2,7 @@
 name: verify-against-spec
 description: Przegląd zgodności wykonania ze specyfikacją — tryb check (lekka bramka tylko do odczytu) i tryb validate (rozstrzyganie rozjazdów z człowiekiem). Ponumerowane niezgodności w stałych kategoriach, bezpieczeństwo osobno. Używaj jako recenzent przy przeglądzie jednostki zmiany i przed zamknięciem planu.
 rodzina: hybryda specyfikacji (rdzeń ogólny)
-zrodla: warpdotdev/common-skills check-impl-against-spec i validate-changes-match-specs (01.11.2026); kanon tych skilli (28.06.2026); reguły Triady §5 (kroki 7–8), §8; Anthropic Prompting Claude Opus 5 (code review: report everything, filter in a separate pass)
+zrodla: warpdotdev/common-skills check-impl-against-spec i validate-changes-match-specs (01.11.2026); kanon tych skilli (28.06.2026); Anthropic Prompting Claude Opus 5 (code review: report everything, filter in a separate pass)
 zastepuje: check-impl-against-spec (check), validate-changes-match-specs (validate)
 ---
 
