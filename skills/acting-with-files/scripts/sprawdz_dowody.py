@@ -30,6 +30,10 @@ Sprawdza:
   - OSTRZEGA (UWAGA, bez zmiany kodu wyjścia), gdy faza `complete` nie ma pola `**Koniec:**` — Gantt w CSW
     pokazuje wtedy „nie wiem, brak daty” (31.10.2026, karta t_90703f7d); datę odtwarza się ze źródła
     i zapisuje z adnotacją w nawiasie, nie zgaduje.
+  - Znacznik planu „sprzed metody” (24.11.2026, karta t_04863db3): pole nagłówka `**Metoda:** sprzed-metody · RRRR-MM-DD`
+    (data nadania znacznika) wyłącza kontrolę planu — „POMINIĘTY: plan sprzed metody (RRRR-MM-DD)”, kod 0, bez
+    stemplowania i bez zapisu. Znacznik nie kryje pracy: plan ze znacznikiem i fazą pending/in_progress → kod 1;
+    pole `Metoda` z wartością „sprzed-metody” bez poprawnej daty też → kod 1. Inne wartości `Metoda` są ignorowane.
 Poza stemplowaniem (jw.) tylko odczyt. Biblioteka standardowa.
 """
 import re
@@ -206,6 +210,40 @@ def ostrzezenia_rewizji(plan, tekst):
     return []
 
 
+_METODA = re.compile(r"^\**Metoda:?\**:?[ \t]*(.*)$", re.M)
+_METODA_SPRZED = re.compile(r"sprzed-metody(?:\s*·\s*(\d{4})-(\d{2})-(\d{2}))?\s*$")
+
+
+def znacznik_sprzed_metody(tekst):
+    """Pole `**Metoda:** sprzed-metody · RRRR-MM-DD` (wzorzec jak `Rewizja`; poza blokami kodu).
+
+    Zwraca None (brak znacznika), (data, None) albo (None, błąd) przy polu bez poprawnej daty.
+    """
+    bez_blokow = re.sub(r"^(```|~~~).*?^\1[^\n]*$", "", tekst.lstrip("\ufeff"), flags=re.M | re.S)
+    for m in _METODA.finditer(bez_blokow):
+        w = _METODA_SPRZED.fullmatch(m.group(1).strip())
+        if not w:
+            continue  # inna wartość pola Metoda: nie nasz znacznik
+        if w.group(1) is None:
+            return None, f"znacznik sprzed metody bez daty: „{m.group(0).strip()}” (format: `**Metoda:** sprzed-metody · RRRR-MM-DD`)"
+        try:
+            datetime(int(w.group(1)), int(w.group(2)), int(w.group(3)))
+        except ValueError:
+            return None, f"znacznik sprzed metody z niepoprawną datą: „{m.group(0).strip()}”"
+        return f"{w.group(1)}-{w.group(2)}-{w.group(3)}", None
+    return None
+
+
+def fazy_otwarte(fazy):
+    """Fazy pending/in_progress; skreślone `~~in_progress~~` przy `complete` się nie liczą."""
+    wynik = []
+    for f in fazy:
+        st = re.sub(r"~~.*?~~", "", f["status"] or "").lower()
+        if "complete" not in st and re.search(r"pending|in_progress", st):
+            wynik.append(f)
+    return wynik
+
+
 def ostrzezenia_dat(plan):
     """UWAGA dla fazy complete bez `**Koniec:**` (stempel dopisuje stempluj_plan przy zmianie statusu; ta kontrola łapie fazy historyczne)."""
     if fazy_planu is None:
@@ -233,6 +271,22 @@ def main(argv):
     if not plan.is_file():
         print(f"BRAK PLIKU: {plan}")
         return 2
+    znacznik = znacznik_sprzed_metody(plan.read_text(encoding="utf-8-sig"))
+    if znacznik is not None:
+        data, blad = znacznik
+        fazy_z = wczytaj_fazy(plan.read_text(encoding="utf-8-sig"))
+        print(f"Plan: {plan}")
+        otwarte = fazy_otwarte(fazy_z)
+        if blad or otwarte:
+            print("NARUSZENIA (%d):" % (1 if blad else len(otwarte)))
+            if blad:
+                print(f"  - {blad}")
+            for f in otwarte:
+                print(f"  - znacznik sprzed metody na planie z otwartą fazą {f['nr']}: {f['nazwa']} "
+                      f"(status „{f['status']}”) — dokończ albo zamknij fazę, albo zdejmij znacznik")
+            return 1
+        print(f"POMINIĘTY: plan sprzed metody ({data}) — kontrola dowodów nie dotyczy; nic nie zapisano.")
+        return 0
     stemple = []
     if daty_faz is not None:
         try:

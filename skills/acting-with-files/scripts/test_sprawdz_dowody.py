@@ -365,5 +365,62 @@ class TestTrybZamkniecia(unittest.TestCase):
             self.assertEqual(uruchom(p, "--tylko-odczyt", "--zamkniecie")[0], 0)
 
 
+class ZnacznikSprzedMetodyTest(unittest.TestCase):
+    """`**Metoda:** sprzed-metody · RRRR-MM-DD` (karta t_04863db3, 24.11.2026): wyłącza kontrolę planu zamkniętego,
+    nie kryje fazy otwartej, nie zmienia zachowania planów bez znacznika."""
+    ZNACZNIK = "**Metoda:** sprzed-metody · 2026-11-24\n"
+    ZLY_PLAN = "### Phase 1: A\n**Status:** complete\n"  # bez „Gotowe, gdy” i Dowodu: normalnie kod 1
+
+    def kod(self, tekst, *flagi):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = plan_w_katalogu(tmp, tekst)
+            return uruchom(p, *flagi)
+
+    def test_plan_zamkniety_ze_znacznikiem_przechodzi(self):
+        self.assertEqual(self.kod("# P\n\n" + self.ZLY_PLAN)[0], 1)  # kontrola dodatnia: bez znacznika naruszenie
+        kod, wyj = self.kod("# P\n\n" + self.ZNACZNIK + "\n" + self.ZLY_PLAN)
+        self.assertEqual(kod, 0, wyj)
+        self.assertIn("POMINIĘTY: plan sprzed metody (2026-11-24)", wyj)
+        self.assertNotIn("NARUSZENIA", wyj)
+
+    def test_plan_bez_faz_ze_znacznikiem_przechodzi(self):
+        self.assertEqual(self.kod("# P\n\n- [x] F1\n")[0], 1)  # bez znacznika: „0 faz”
+        self.assertEqual(self.kod("# P\n\n" + self.ZNACZNIK + "- [x] F1\n")[0], 0)
+
+    def test_znacznik_z_faza_otwarta_to_naruszenie(self):
+        for st in ("pending", "in_progress", "in_progress (05.10)"):
+            kod, wyj = self.kod("# P\n\n" + self.ZNACZNIK + "\n" + self.ZLY_PLAN + "\n### Phase 2: B\n**Status:** " + st + "\n")
+            self.assertEqual(kod, 1, (st, wyj))
+            self.assertIn("znacznik sprzed metody na planie z otwartą fazą 2", wyj)
+            self.assertNotIn("POMINIĘTY", wyj)
+
+    def test_skreslony_in_progress_przy_complete_nie_jest_otwarty(self):
+        kod, wyj = self.kod("# P\n\n" + self.ZNACZNIK + "\n### Phase 1: A\n**Status:** ~~in_progress (05.10)~~ **complete 06.10**\n")
+        self.assertEqual(kod, 0, wyj)
+
+    def test_znacznik_bez_daty_albo_z_zla_data_to_naruszenie(self):
+        for pole in ("**Metoda:** sprzed-metody\n", "**Metoda:** sprzed-metody · 2026-13-40\n"):
+            kod, wyj = self.kod("# P\n\n" + pole + "\n" + self.ZLY_PLAN)
+            self.assertEqual(kod, 1, (pole, wyj))
+            self.assertIn("znacznik sprzed metody", wyj)
+
+    def test_inna_wartosc_metody_i_przyklad_w_bloku_nie_wlaczaja_pominiecia(self):
+        for tekst in ("# P\n\n**Metoda:** acting-with-files\n\n" + self.ZLY_PLAN,
+                      "# P\n\n```\n" + self.ZNACZNIK + "```\n\n" + self.ZLY_PLAN,
+                      "# P\n\nTekst o **Metoda:** sprzed-metody · 2026-11-24 w środku zdania\n\n" + self.ZLY_PLAN):
+            kod, wyj = self.kod(tekst)
+            self.assertEqual(kod, 1, wyj)
+            self.assertNotIn("POMINIĘTY", wyj)
+
+    def test_znacznik_nie_stempluje_i_nie_pisze_stanu(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            t = "# P\n\n" + self.ZNACZNIK + "\n### Phase 1: A\n**Status:** complete\n" + GOTOWE + "**Dowód:** plik /tmp/x.txt zawiera wynik 12\n"
+            p = plan_w_katalogu(tmp, t)
+            h = md5(p)
+            self.assertEqual(uruchom(p)[0], 0)  # bez --tylko-odczyt
+            self.assertEqual(h, md5(p))
+            self.assertEqual(sorted(x.name for x in Path(tmp).iterdir()), ["task_plan.md"])
+
+
 if __name__ == "__main__":
     unittest.main()
