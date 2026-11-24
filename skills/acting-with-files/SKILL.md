@@ -10,6 +10,8 @@ zrodla: acting-with-files zespołu (część ogólna, 01.11.2026); recenzje SPEC
 
 Ten skill działa samodzielnie: ma własne szablony plików planu (`templates/`) i własny automat kontroli (`scripts/sprawdz_dowody.py`, z trybem `--zamkniecie` pilnującym, by nic nie zostało otwarte przed ogłoszeniem końca). Zapis plików i faz jest zgodny z dodatkiem planning-with-files — kto go ma, może używać obu. Skill mówi, jak fazy zamykać, przekazywać i zostawiać ślad. Najpierw nakładka (jak w `spec-driven`).
 
+Daty faz (`**Start:**`, `**Koniec:**`) dopisuje opcjonalny skrypt `scripts/daty_faz.py`: kontrola `sprawdz_dowody.py` działa bez niego, a gdy leży obok, przy zmianie statusu fazy stempluje datę z zegara (stan statusów w `.stan.json` planu; `--tylko-odczyt` niczego nie zapisuje). Wykres czasu (`gantt.py`, `harmonogram_faz.py`) i kolejność pracy (`kolejnosc.py`) czytają daty z tych pól, a nazwy osób, ścieżki i wzorce planów z pliku ustawień podanego argumentem `--ustawienia PLIK` (opis kluczy: `scripts/ustawienia_planu.py`); bez dat plan też jest ważny.
+
 Plik planu i osiem reguł są **twarde**: czytają je automaty i inni agenci, a od nich zależy, czy człowiek widzi prawdziwy stan pracy. **Swobodne** jest to, jak dzielisz pracę na fazy, ile ich jest, co i jak zapisujesz w `findings.md` i jak sprawdzasz własną pracę.
 
 ## Pliki planu (`.planning/<id>/`, katalog płaski)
